@@ -5,8 +5,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-import java.util.List;
-
 public class JpaMain {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello"); // persistence.xml의 ersistence-unit
@@ -18,15 +16,12 @@ public class JpaMain {
         tx.begin(); // JPA의 모든 데이터 변경은 트랜잭션 안에서 실행
 
         try {
-            // 비영속
-            Member member = new Member();
-            member.setId(100L);
-            member.setName("HelloJPA");
 
             // 영속
-            System.out.println("=== BEFORE ===");
-            em.persist(member);
-            System.out.println("=== AFTER ===");
+            Member member = em.find(Member.class, 150L);
+            member.setName("ZZZZZ");
+
+            System.out.println("==========================");
 
             tx.commit();
         } catch (Exception e) {
