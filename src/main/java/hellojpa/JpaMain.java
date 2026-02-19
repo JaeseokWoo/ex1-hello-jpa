@@ -18,15 +18,15 @@ public class JpaMain {
         tx.begin(); // JPA의 모든 데이터 변경은 트랜잭션 안에서 실행
 
         try {
-//            Member findMember = em.find(Member.class, 1L);
-            List<Member> result = em.createQuery("select m from Member as m", Member.class) // JPQL: 엔티티 객체를 대상으로 쿼리
-                    .setFirstResult(5)
-                    .setMaxResults(8)
-                    .getResultList();
+            // 비영속
+            Member member = new Member();
+            member.setId(100L);
+            member.setName("HelloJPA");
 
-            for (Member member : result) {
-                System.out.println("member.name = " + member.getName());
-            }
+            // 영속
+            System.out.println("=== BEFORE ===");
+            em.persist(member);
+            System.out.println("=== AFTER ===");
 
             tx.commit();
         } catch (Exception e) {
