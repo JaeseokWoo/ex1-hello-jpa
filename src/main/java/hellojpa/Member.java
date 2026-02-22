@@ -1,5 +1,6 @@
 package hellojpa;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -7,6 +8,8 @@ import jakarta.persistence.Id;
 public class Member {
     @Id // 데이터베이스 PK와 매핑
     private Long id;
+
+    @Column(unique = true, length = 10)
     private String name;
 
     public Member() { // JPA는 기본 생성자가 있어야 한다, 꼭 public으로 할 필요 없다.(public 또는 protected)
