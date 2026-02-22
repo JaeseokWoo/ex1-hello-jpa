@@ -1,9 +1,8 @@
 package hellojpa;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -18,12 +17,23 @@ public class JpaMain {
         try {
 
             // 영속
-            Member member = em.find(Member.class, 150L);
-            member.setName("ZZZZZ");
+            Member member1 = new Member(204L, "member200");
+            em.persist(member1);
+
+            em.flush(); // flush해도 1차 캐시 유지, Dirty Checking과 쓰기 지연 SQL 저장소의 쿼리 실행하여 동기화
+
+            // JPQL 쿼리 실행시 자동으로 flush 호출
+            Member member2 = new Member(205L, "member200");
+            em.persist(member2);
+            //중간에 JPQL 실행
+            System.out.println("============BEFORE JPQL==============");
+            TypedQuery<Member> query = em.createQuery("select m from Member m", Member.class);
+            System.out.println("============AFTER JPQL==============");
+            List<Member> members= query.getResultList();
 
             System.out.println("==========================");
 
-            tx.commit();
+            tx.commit(); // 트랜잭 커밋할 때도 자동으로 flush 호출
         } catch (Exception e) {
             tx.rollback();
         } finally {
