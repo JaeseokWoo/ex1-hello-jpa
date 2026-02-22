@@ -17,19 +17,13 @@ public class JpaMain {
         try {
 
             // 영속
-            Member member1 = new Member(204L, "member200");
-            em.persist(member1);
+            Member member = em.find(Member.class, 150L);
+            member.setName("AAAAA");
 
-            em.flush(); // flush해도 1차 캐시 유지, Dirty Checking과 쓰기 지연 SQL 저장소의 쿼리 실행하여 동기화
+            em.detach(member); // 특정 엔티티만 준영속 상태로 전환
+            em.clear(); // 영속성 건텍스트를 완전히 초기화
 
-            // JPQL 쿼리 실행시 자동으로 flush 호출
-            Member member2 = new Member(205L, "member200");
-            em.persist(member2);
-            //중간에 JPQL 실행
-            System.out.println("============BEFORE JPQL==============");
-            TypedQuery<Member> query = em.createQuery("select m from Member m", Member.class);
-            System.out.println("============AFTER JPQL==============");
-            List<Member> members= query.getResultList();
+            Member member2 = em.find(Member.class, 150L);
 
             System.out.println("==========================");
 
