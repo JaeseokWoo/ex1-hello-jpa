@@ -15,18 +15,6 @@ public class JpaMain {
         tx.begin(); // JPA의 모든 데이터 변경은 트랜잭션 안에서 실행
 
         try {
-
-            // 영속
-            Member member = em.find(Member.class, 150L);
-            member.setName("AAAAA");
-
-            em.detach(member); // 특정 엔티티만 준영속 상태로 전환
-            em.clear(); // 영속성 건텍스트를 완전히 초기화
-
-            Member member2 = em.find(Member.class, 150L);
-
-            System.out.println("==========================");
-
             tx.commit(); // 트랜잭 커밋할 때도 자동으로 flush 호출
         } catch (Exception e) {
             tx.rollback();
