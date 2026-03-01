@@ -29,13 +29,11 @@ public class JpaMain {
             em.clear();
 
             Member findMember = em.find(Member.class, member.getId());
+            List<Member> members = findMember.getTeam().getMembers();
 
-            Team findTeam = findMember.getTeam();
-            System.out.println("findTeam.getName() = " + findTeam.getName());
-
-            //
-            Team newTeam = em.find(Team.class, 100L);
-            findMember.setTeam(newTeam);
+            for (Member m : members) {
+                System.out.println("m.getUsername() = " + m.getUsername());
+            }
 
             tx.commit(); // 트랜잭 커밋할 때도 자동으로 flush 호출
         } catch (Exception e) {
