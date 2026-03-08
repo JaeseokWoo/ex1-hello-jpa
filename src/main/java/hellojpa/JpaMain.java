@@ -15,26 +15,17 @@ public class JpaMain {
         tx.begin(); // JPA의 모든 데이터 변경은 트랜잭션 안에서 실행
 
         try {
-            // 저장
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
 
             Member member = new Member();
             member.setUsername("member1");
+
             em.persist(member);
 
-            team.addMember(member);
+            Team team = new Team();
+            team.setName("teamA");
+            team.getMembers().add(member);
 
-//            em.flush();
-//            em.clear();
-
-            Team findTeam = em.find(Team.class, team.getId()); // 1차 캐시
-            List<Member> members = findTeam.getMembers();
-
-            System.out.println("=====================");
-            System.out.println("findTeam = " + findTeam);
-            System.out.println("=====================");
+            em.persist(team);
 
             tx.commit(); // 트랜잭 커밋할 때도 자동으로 flush 호출
         } catch (Exception e) {
