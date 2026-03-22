@@ -3,6 +3,8 @@ package hellojpa;
 import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 
+import java.util.List;
+
 public class JpaMain {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello"); // persistence.xml의 ersistence-unit
@@ -14,18 +16,33 @@ public class JpaMain {
         tx.begin(); // JPA의 모든 데이터 변경은 트랜잭션 안에서 실행
 
         try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
+            Team teamB = new Team();
+            team.setName("teamB");
+            em.persist(teamB);
 
             Member member1 = new Member();
             member1.setUsername("member1");
+            member1.setTeam(team);
             em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("member2");
+            member2.setTeam(teamB);
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            Member refMember = em.getReference(Member.class, member1.getId());
-            System.out.println("refMember = " + refMember.getClass()); // Proxy
-            Hibernate.initialize(refMember); // 강제 초기화
+//            Member m = em.find(Member.class, member1.getId());
 
+            List<Member> members = em.createQuery("select m from Member m join fetch  m.team", Member.class).getResultList();
+
+            // SQL: select * from Member
+            // SQL: select * from Team where TEAM_ID = xxx
 
             tx.commit(); // 트랜잭 커밋할 때도 자동으로 flush 호출
         } catch (Exception e) {
