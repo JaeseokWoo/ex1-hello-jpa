@@ -1,9 +1,7 @@
 package hellojpa;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import org.hibernate.Hibernate;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -17,19 +15,22 @@ public class JpaMain {
 
         try {
 
-            Member member = new Member();
-            member.setUsername("user1");
-            member.setCreatedBy("kim");
-            member.setCreatedDate(LocalDateTime.now());
-
-            em.persist(member);
+            Member member1 = new Member();
+            member1.setUsername("member1");
+            em.persist(member1);
 
             em.flush();
             em.clear();
 
+            Member refMember = em.getReference(Member.class, member1.getId());
+            System.out.println("refMember = " + refMember.getClass()); // Proxy
+            Hibernate.initialize(refMember); // 강제 초기화
+
+
             tx.commit(); // 트랜잭 커밋할 때도 자동으로 flush 호출
         } catch (Exception e) {
             tx.rollback();
+            e.printStackTrace();
         } finally {
             em.close(); // EntityManager 내부적으로 데이터베이스 커낵션을 물고 동작하기 때문에 사용을 다 하면 닫아주어야 한다.
         }
